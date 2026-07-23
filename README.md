@@ -21,52 +21,20 @@ cd msds610
 pip install -e .
 ```
 
-## Usage
+## What's inside
 
-As a library:
-
-```python
-from thefuck import greet, add
-
-print(greet("MSDS610"))  # Hello, MSDS610!
-print(add(2, 3))         # 5
-```
-
-As a command-line tool:
-
-```bash
-thefuck greet            # Hello, world!
-thefuck greet MSDS610    # Hello, MSDS610!
-thefuck --version
-```
-
-## Common gotchas
-
-The `thefuck.gotchas` module collects easy-to-make programming mistakes — the
-Python cousins of the classic C prank `#define true false`. Each one ships a
-`buggy` and a `fixed` version plus an explanation, so you can run and compare
-them:
+`thefuck.confusables.CONFUSABLES` — a mapping of characters that *look* like
+ASCII but aren't. When a Chinese IME is left in full-width mode, these sneak
+into source code and cause a `SyntaxError` even though the line looks fine on
+screen (the spiritual cousin of the C prank `#define true false`).
 
 ```python
-from thefuck import gotchas
+from thefuck import CONFUSABLES
 
-print(gotchas.list_gotchas())
-print(gotchas.explain("mutable_default"))
-
-gotchas.late_binding_buggy()   # [2, 2, 2]  <- surprising
-gotchas.late_binding_fixed()   # [0, 1, 2]  <- correct
+CONFUSABLES["（"]   # -> "("   full-width parenthesis
+CONFUSABLES["“"]   # -> '"'   smart double quote
+CONFUSABLES["，"]   # -> ","   full-width comma
 ```
-
-Or from the command line:
-
-```bash
-thefuck gotchas                # list all gotchas
-thefuck gotchas float_equality # explain one
-```
-
-Covered so far: mutable default arguments, `is` vs `==`, floating-point
-equality, late-binding closures, mutating a list while iterating, and
-integer vs. true division.
 
 ## Development
 
