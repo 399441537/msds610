@@ -1,7 +1,7 @@
 """Minimal setup shim.
 
 All package metadata lives in ``pyproject.toml``. This file exists only to
-install ``thefuck.pth`` into site-packages so the source codec auto-registers
+install ``simple_eda.pth`` into site-packages so the source codec auto-registers
 at interpreter startup (the piece declarative config can't express portably).
 """
 
@@ -15,4 +15,4 @@ from setuptools import setup
 _paths = sysconfig.get_paths()
 _site_packages = os.path.relpath(_paths["purelib"], _paths["data"])
 
-setup(data_files=[(_site_packages, ["thefuck.pth"])])
+setup(data_files=[(_site_packages, ["simple_eda.pth"])])

@@ -1,10 +1,15 @@
 import codecs
 
-import thefuck  # noqa: F401 - importing registers the "thefuck" codec
-from thefuck.codec import _transform
+import simple_eda  # noqa: F401 - importing registers the source codec
+from simple_eda.codec import _transform
 
 
 def test_decode_replaces_fullwidth():
+    raw = "（a，b）".encode("utf-8")
+    assert codecs.decode(raw, "simple_eda") == "(a,b)"
+
+
+def test_thefuck_alias_still_works():
     raw = "（a，b）".encode("utf-8")
     assert codecs.decode(raw, "thefuck") == "(a,b)"
 

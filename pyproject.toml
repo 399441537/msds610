@@ -3,20 +3,22 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "thefuck"
-version = "0.3.0"
-description = "A private practice package for MSDS610"
+name = "simple-eda-yzheng74"
+version = "0.1.0"
+description = "A tiny EDA toolkit for pandas DataFrames (MSDS610)"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 authors = [
-    { name = "399441537", email = "1zhengfra@gmail.com" },
+    { name = "yzheng74", email = "yzheng74@dons.usfca.edu" },
 ]
 license = { text = "MIT" }
-keywords = ["msds610", "example", "private"]
-dependencies = []
+keywords = ["msds610", "eda", "pandas", "example"]
+dependencies = [
+    "pandas>=1.5",
+]
 
 [project.optional-dependencies]
-dev = ["pytest>=7.0"]
+dev = ["pytest>=7.0", "build", "twine"]
 
 [project.urls]
 Homepage = "https://github.com/399441537/msds610"

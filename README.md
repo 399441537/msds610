@@ -1,64 +1,75 @@
-# thefuck
+# simple-eda-yzheng74
 
-A private practice package for **MSDS610**.
+A tiny exploratory-data-analysis (EDA) toolkit for pandas DataFrames, built for
+**MSDS610**.
 
-> Note: `thefuck` here is a private/course package and is unrelated to the
-> public tool of the same name. It is not published to PyPI.
+- **Distribution name** (PyPI / pip): `simple-eda-yzheng74`
+- **Import name** (in Python): `simple_eda`
 
 ## Install
 
-Because this package is private (not on PyPI), install it directly from GitHub:
+From PyPI (once published):
 
 ```bash
-pip install "git+https://github.com/399441537/msds610.git"
+pip install simple-eda-yzheng74
 ```
 
-Or install from a local clone:
+From a local clone (development mode):
 
 ```bash
 git clone https://github.com/399441537/msds610.git
 cd msds610
-pip install .
+pip install -e ".[dev]"
 ```
 
-## What it does
+## EDA helpers
 
-Ever typed full-width / Chinese punctuation by accident (`（`, `，`, `“`) and
-got a `SyntaxError` on a line that looks perfectly fine? This package installs
-a **source codec** — the Python analog of C's `#define` — that swaps those
-look-alike characters for their ASCII equivalents *while Python loads the
-file*, before the parser ever sees them.
-
-Opt a file in with a coding cookie on its **first or second line**:
+Every function takes a `pandas.DataFrame` and returns a plain Python object
+(dict / list), so results are easy to print, serialize, or test.
 
 ```python
-# coding: thefuck
-def add（a，b）：      # full-width parens, comma, colon
-    return a ＋ b     # full-width plus
+import pandas as pd
+from simple_eda import summarize, missing, numeric_columns, categorical_columns
 
-print（add（1，2））   # -> 3
+df = pd.DataFrame({"age": [30, 25, None], "city": ["SF", "LA", "SF"]})
+
+summarize(df)            # {'rows': 3, 'cols': 2, 'columns': [...], 'dtypes': {...}}
+missing(df)              # {'age': 1, 'city': 0}
+numeric_columns(df)      # ['age']
+categorical_columns(df)  # ['city']
 ```
 
-Running that file just works. Your file on disk is **not modified** — the
-substitution happens only in memory at load time, exactly like `#define`.
+## Bonus: full-width punctuation codec
 
-### How activation works
+The package also ships a source codec (the Python analog of C's `#define`).
+Add `# coding: simple_eda` to the first or second line of a file and any
+full-width / Chinese punctuation is rewritten to ASCII *while Python loads the
+file* — the file on disk is never changed:
 
-Installing the package drops a `thefuck.pth` file into `site-packages`, whose
-single line `import thefuck.codec` registers the codec at every interpreter
-startup. So once installed, any file with `# coding: thefuck` works
-automatically — you don't even need to `import thefuck` yourself.
+```python
+# coding: simple_eda
+def add（a，b）：      # full-width parens, comma, colon
+    return a ＋ b     # full-width plus
+```
 
-The characters it rewrites are listed in `thefuck.confusables.CONFUSABLES`
-(full-width brackets/quotes/operators, ideographic comma & period, full-width
-space, …).
+Installing the package drops a `simple_eda.pth` into `site-packages`, so the
+codec auto-registers at interpreter startup. (`# coding: thefuck` also works as
+a legacy alias.)
 
-## Development
+## Development & tests
 
 ```bash
 pip install -e ".[dev]"
 pytest
 ```
 
-Note: editable installs may not place the `.pth`; during development just
-`import thefuck` once to register the codec.
+## Publishing (TestPyPI → PyPI)
+
+```bash
+python -m build                              # build wheel + sdist into dist/
+python -m twine check dist/*                 # validate metadata
+python -m twine upload --repository testpypi dist/*   # upload to TestPyPI first
+python -m twine upload dist/*                # then the real PyPI
+```
+
+Uploading requires a PyPI / TestPyPI account and an API token.
