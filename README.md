@@ -35,10 +35,38 @@ print(add(2, 3))         # 5
 As a command-line tool:
 
 ```bash
-thefuck            # Hello, world!
-thefuck MSDS610    # Hello, MSDS610!
+thefuck greet            # Hello, world!
+thefuck greet MSDS610    # Hello, MSDS610!
 thefuck --version
 ```
+
+## Common gotchas
+
+The `thefuck.gotchas` module collects easy-to-make programming mistakes — the
+Python cousins of the classic C prank `#define true false`. Each one ships a
+`buggy` and a `fixed` version plus an explanation, so you can run and compare
+them:
+
+```python
+from thefuck import gotchas
+
+print(gotchas.list_gotchas())
+print(gotchas.explain("mutable_default"))
+
+gotchas.late_binding_buggy()   # [2, 2, 2]  <- surprising
+gotchas.late_binding_fixed()   # [0, 1, 2]  <- correct
+```
+
+Or from the command line:
+
+```bash
+thefuck gotchas                # list all gotchas
+thefuck gotchas float_equality # explain one
+```
+
+Covered so far: mutable default arguments, `is` vs `==`, floating-point
+equality, late-binding closures, mutating a list while iterating, and
+integer vs. true division.
 
 ## Development
 
