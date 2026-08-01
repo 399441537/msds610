@@ -1,18 +1,11 @@
 # Byte-compiled / optimized
 __pycache__/
 *.py[cod]
-*$py.class
 
 # Distribution / packaging
 build/
 dist/
 *.egg-info/
-.eggs/
-
-# Test / coverage
-.pytest_cache/
-.coverage
-htmlcov/
 
 # Virtual environments
 .venv/
@@ -26,13 +19,3 @@ env/
 
 # Claude Code local settings
 .claude/
-
-# Scratch / manual test files
-test.py
-test.png
-
-# Temporary data-generation / usage scripts and their outputs
-generate_dataset.py
-usage_example.py
-sample_data.csv
-out_*.png
