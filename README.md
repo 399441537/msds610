@@ -1,7 +1,9 @@
 # simple-eda-yzheng74
 
 A tiny **visualization + EDA** library for pandas DataFrames (MSDS610). Every
-chart follows the Evergreen & Emery *Data Visualization Checklist* by default.
+chart follows the Evergreen & Emery *Data Visualization Checklist* by default:
+a descriptive title, data labeled directly, an intentional order, and a
+colorblind-safe palette that stays legible in black & white.
 
 - **Install name** (pip): `simple-eda-yzheng74`
 - **Import name** (Python): `simple_eda`
@@ -9,76 +11,82 @@ chart follows the Evergreen & Emery *Data Visualization Checklist* by default.
 ## Install
 
 ```bash
-pip install simple-eda-yzheng74          # from PyPI (once published)
+pip install simple-eda-yzheng74
 ```
 
-From a local clone (development):
+## Visualizations
 
-```bash
-git clone https://github.com/399441537/msds610.git
-cd msds610
-pip install -e ".[dev]"
-```
-
-## Functions
-
-Visualizations (each returns a Matplotlib `Axes`):
-
-- `bar(df, category, value, *, title, subtitle=None, highlight=None)`
-- `lollipop(df, category, value, *, title, subtitle=None, highlight=None)`
-- `slopegraph(df, category, start, end, *, title, subtitle=None, start_label, end_label)`
-
-EDA helpers (each takes a DataFrame, returns a plain Python object):
-
-- `summarize(df)` → dict · `missing(df)` → dict
-- `numeric_columns(df)` → list · `categorical_columns(df)` → list
+Each function takes a DataFrame plus the column names to plot, and returns a
+Matplotlib `Axes` you can save or tweak.
 
 ```python
 import pandas as pd
-from simple_eda import bar
+from simple_eda import bar, lollipop, slopegraph
 
-df = pd.DataFrame({"region": ["North", "South", "West"],
-                   "sales_2024": [145, 190, 175]})
+df = pd.DataFrame({
+    "region": ["North", "South", "East", "West", "Central"],
+    "sales_2023": [120, 200, 90, 160, 75],
+    "sales_2024": [145, 190, 130, 175, 60],
+    "stores": [8, 14, 6, 11, 5],
+})
+```
+
+### `bar` — horizontal bar chart
+
+Ranks categories; pass `highlight` to color one bar.
+
+```python
 ax = bar(df, "region", "sales_2024",
-         title="South leads 2024 regional coffee sales",
-         subtitle="Net sales by region (thousands USD)", highlight="South")
+         title="West and North lead 2024 regional coffee sales",
+         subtitle="Net sales by region (thousands USD)",
+         highlight="West")
 ax.figure.savefig("bar.png", dpi=150)
+```
+
+### `lollipop` — lollipop chart
+
+A lighter-ink alternative to bars.
+
+```python
+ax = lollipop(df, "region", "stores",
+              title="South operates the most stores",
+              highlight="South")
+ax.figure.savefig("lollipop.png", dpi=150)
+```
+
+### `slopegraph` — before/after slopegraph
+
+Shows change between two columns; rising lines are blue, falling ones orange.
+
+```python
+ax = slopegraph(df, "region", "sales_2023", "sales_2024",
+                title="East surged while Central slipped, 2023 to 2024",
+                start_label="2023", end_label="2024")
+ax.figure.savefig("slopegraph.png", dpi=150)
+```
+
+## EDA helpers
+
+Each takes a DataFrame and returns a plain Python object (dict or list).
+
+```python
+from simple_eda import summarize, missing, numeric_columns, categorical_columns
+
+summarize(df)            # {'rows': 5, 'cols': 4, 'columns': [...], 'dtypes': {...}}
+missing(df)              # {'region': 0, 'sales_2023': 0, ...}
+numeric_columns(df)      # ['sales_2023', 'sales_2024', 'stores']
+categorical_columns(df)  # ['region']
 ```
 
 ## My two favorite visualizations
 
-### 1. Horizontal bar — `bar()`
+**Horizontal bar (`bar`)** — my go-to for a ranking. Bars are horizontal so the
+category labels stay upright, sorted largest-to-smallest so the order carries
+meaning, and labeled directly so there's no axis or gridlines to read. One blue
+bar against muted gray points the eye at the takeaway and still reads in black
+and white.
 
-- **Horizontal bars** keep category labels upright and readable.
-- **Sorted largest-to-smallest** so the ranking is the shape of the chart.
-- **Values labeled directly** on the bars, so the x-axis and gridlines are gone.
-- **One blue highlight** against **muted gray** points the eye at the takeaway,
-  and it stays legible in black & white.
-- A **descriptive, left-justified title** states the finding, not "Sales by region."
-
-### 2. Slopegraph — `slopegraph()`
-
-- **Two anchors connected by a line** — the slope encodes direction and size of
-  change with almost no ink.
-- **Both ends labeled directly**, so there is no legend or axis to read.
-- **Blue = up, orange = down** (colorblind-safe; also clear in grayscale because
-  the lines physically slope).
-- **Thin muted lines** keep it calm; the title carries the conclusion.
-
-## Tests
-
-```bash
-pip install -e ".[dev]"
-pytest
-```
-
-## Publishing (TestPyPI → PyPI)
-
-```bash
-python -m build                                       # wheel + sdist into dist/
-python -m twine check dist/*                          # validate
-python -m twine upload --repository testpypi dist/*   # TestPyPI first
-python -m twine upload dist/*                         # then real PyPI
-```
-
-Uploading requires a PyPI / TestPyPI account and an API token.
+**Slopegraph (`slopegraph`)** — the most elegant way to show change between two
+points in time. The slope itself encodes direction and size of change with
+almost no ink, both ends are labeled directly (no legend), and blue-up /
+orange-down is colorblind-safe and clear in grayscale.
