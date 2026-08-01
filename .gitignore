@@ -26,3 +26,7 @@ env/
 
 # Claude Code local settings
 .claude/
+
+# Scratch / manual test files
+test.py
+test.png
