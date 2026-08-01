@@ -33,23 +33,21 @@ EDA helpers (each takes a DataFrame, returns a plain Python object):
 - `summarize(df)` → dict · `missing(df)` → dict
 - `numeric_columns(df)` → list · `categorical_columns(df)` → list
 
-Data: `load_sample()` → a sample sales DataFrame (also at
-[`examples/sample_data.csv`](examples/sample_data.csv)).
-
 ```python
-from simple_eda import load_sample, bar
-df = load_sample()
+import pandas as pd
+from simple_eda import bar
+
+df = pd.DataFrame({"region": ["North", "South", "West"],
+                   "sales_2024": [145, 190, 175]})
 ax = bar(df, "region", "sales_2024",
-         title="West and North lead 2024 regional coffee sales",
-         subtitle="Net sales by region (thousands USD)", highlight="West")
+         title="South leads 2024 regional coffee sales",
+         subtitle="Net sales by region (thousands USD)", highlight="South")
 ax.figure.savefig("bar.png", dpi=150)
 ```
 
 ## My two favorite visualizations
 
 ### 1. Horizontal bar — `bar()`
-
-![horizontal bar chart](examples/fav1_bar.png)
 
 - **Horizontal bars** keep category labels upright and readable.
 - **Sorted largest-to-smallest** so the ranking is the shape of the chart.
@@ -59,8 +57,6 @@ ax.figure.savefig("bar.png", dpi=150)
 - A **descriptive, left-justified title** states the finding, not "Sales by region."
 
 ### 2. Slopegraph — `slopegraph()`
-
-![slopegraph](examples/fav2_slopegraph.png)
 
 - **Two anchors connected by a line** — the slope encodes direction and size of
   change with almost no ink.

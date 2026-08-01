@@ -30,3 +30,9 @@ env/
 # Scratch / manual test files
 test.py
 test.png
+
+# Temporary data-generation / usage scripts and their outputs
+generate_dataset.py
+usage_example.py
+sample_data.csv
+out_*.png

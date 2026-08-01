@@ -4,10 +4,8 @@
   (:func:`bar`, :func:`lollipop`, :func:`slopegraph`).
 * EDA helpers for pandas DataFrames (:func:`summarize`, :func:`missing`,
   :func:`numeric_columns`, :func:`categorical_columns`).
-* A sample dataset (:func:`load_sample`).
 """
 
-from simple_eda.datasets import load_sample
 from simple_eda.eda import (
     categorical_columns,
     missing,
@@ -27,7 +25,5 @@ __all__ = [
     "missing",
     "numeric_columns",
     "categorical_columns",
-    # data
-    "load_sample",
     "__version__",
 ]
