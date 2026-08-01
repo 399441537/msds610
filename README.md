@@ -77,16 +77,3 @@ missing(df)              # {'region': 0, 'sales_2023': 0, ...}
 numeric_columns(df)      # ['sales_2023', 'sales_2024', 'stores']
 categorical_columns(df)  # ['region']
 ```
-
-## My two favorite visualizations
-
-**Horizontal bar (`bar`)** — my go-to for a ranking. Bars are horizontal so the
-category labels stay upright, sorted largest-to-smallest so the order carries
-meaning, and labeled directly so there's no axis or gridlines to read. One blue
-bar against muted gray points the eye at the takeaway and still reads in black
-and white.
-
-**Slopegraph (`slopegraph`)** — the most elegant way to show change between two
-points in time. The slope itself encodes direction and size of change with
-almost no ink, both ends are labeled directly (no legend), and blue-up /
-orange-down is colorblind-safe and clear in grayscale.
