@@ -14,7 +14,7 @@ from simple_eda.eda import (
 )
 from simple_eda.viz import bar, lollipop, slopegraph
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 __all__ = [
     # visualizations
     "bar",

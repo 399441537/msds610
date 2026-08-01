@@ -101,6 +101,19 @@ def lollipop(df: pd.DataFrame, category: str, value: str, *, title: str,
     return ax
 
 
+def _spread(values: list, min_gap: float) -> list:
+    """Nudge label positions apart so consecutive ones keep ``min_gap`` between
+    them. Markers stay at the true values; only the text labels shift."""
+    order = sorted(range(len(values)), key=lambda i: values[i])
+    out = [0.0] * len(values)
+    prev = float("-inf")
+    for i in order:
+        y = max(float(values[i]), prev + min_gap)
+        out[i] = y
+        prev = y
+    return out
+
+
 def slopegraph(df: pd.DataFrame, category: str, start: str, end: str, *,
                title: str, subtitle: str | None = None,
                start_label: str | None = None, end_label: str | None = None,
@@ -108,30 +121,43 @@ def slopegraph(df: pd.DataFrame, category: str, start: str, end: str, *,
     """Slopegraph — connect each category's start and end value with a line.
 
     Lines slanting up are blue (increase), down are orange (decrease); both
-    ends are labeled directly, so there is no axis or legend to read.
+    ends are labeled directly, so there is no axis or legend to read. When
+    values are close together the labels are nudged apart so they never
+    overlap, while the dots stay on their true values.
     """
     data = df[[category, start, end]].dropna()
+    cats = list(data[category])
+    starts = [float(v) for v in data[start]]
+    ends = [float(v) for v in data[end]]
+
     if ax is None:
-        _, ax = plt.subplots(figsize=(6.5, 0.5 * len(data) + 2.4))
+        _, ax = plt.subplots(figsize=(6.8, 0.46 * len(data) + 2.8))
 
-    for _, row in data.iterrows():
-        rose = row[end] >= row[start]
-        color = UP if rose else DOWN
-        ax.plot([0, 1], [row[start], row[end]], color=color, lw=1.9,
-                marker="o", markersize=5, solid_capstyle="round", zorder=2)
-        ax.text(-0.03, row[start], f"{row[category]}  {row[start]:,.0f}",
-                ha="right", va="center", fontsize=9.5, color=INK)
-        ax.text(1.03, row[end], f"{row[end]:,.0f}  {row[category]}",
-                ha="left", va="center", fontsize=9.5, color=INK)
+    for s, e in zip(starts, ends):
+        color = UP if e >= s else DOWN
+        ax.plot([0, 1], [s, e], color=color, lw=1.8, marker="o", markersize=5,
+                solid_capstyle="round", zorder=2)
 
-    # headroom so the period headers clear the highest points
-    values = pd.concat([data[start], data[end]])
-    lo, hi = float(values.min()), float(values.max())
-    pad = (hi - lo) * 0.22 or 1.0
-    ax.set_ylim(lo - pad * 0.5, hi + pad)
-    ax.set_xlim(-0.55, 1.55)
+    lo, hi = min(starts + ends), max(starts + ends)
+    span = (hi - lo) or 1.0
+    min_gap = span * 0.055  # minimum vertical spacing between labels
 
-    header_y = hi + pad * 0.45
+    left_ys = _spread(starts, min_gap)
+    right_ys = _spread(ends, min_gap)
+    for c, v, y in zip(cats, starts, left_ys):
+        ax.text(-0.03, y, f"{c}  {v:,.0f}", ha="right", va="center",
+                fontsize=9.5, color=INK)
+    for c, v, y in zip(cats, ends, right_ys):
+        ax.text(1.03, y, f"{v:,.0f}  {c}", ha="left", va="center",
+                fontsize=9.5, color=INK)
+
+    top = max([hi] + left_ys + right_ys)
+    bot = min([lo] + left_ys + right_ys)
+    pad = span * 0.08
+    ax.set_ylim(bot - pad, top + pad * 2.4)  # extra room on top for headers
+    ax.set_xlim(-0.6, 1.6)
+
+    header_y = top + pad * 1.2
     ax.text(0, header_y, start_label or start, ha="center", va="bottom",
             fontsize=11, fontweight="bold", color=INK)
     ax.text(1, header_y, end_label or end, ha="center", va="bottom",
@@ -139,5 +165,5 @@ def slopegraph(df: pd.DataFrame, category: str, start: str, end: str, *,
 
     _strip(ax, keep_left_labels=False)
     _titles(ax, title, subtitle)
-    ax.figure.subplots_adjust(top=0.72, left=0.16, right=0.84, bottom=0.05)
+    ax.figure.subplots_adjust(top=0.74, left=0.17, right=0.83, bottom=0.05)
     return ax
