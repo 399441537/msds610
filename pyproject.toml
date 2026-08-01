@@ -5,16 +5,17 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "simple-eda-yzheng74"
 version = "0.1.0"
-description = "A tiny EDA toolkit for pandas DataFrames (MSDS610)"
+description = "A tiny EDA + visualization toolkit for pandas DataFrames (MSDS610)"
 readme = "README.md"
 requires-python = ">=3.9"
 authors = [
     { name = "yzheng74", email = "yzheng74@dons.usfca.edu" },
 ]
 license = { text = "MIT" }
-keywords = ["msds610", "eda", "pandas", "example"]
+keywords = ["msds610", "eda", "pandas", "visualization", "matplotlib"]
 dependencies = [
     "pandas>=1.5",
+    "matplotlib>=3.5",
 ]
 
 [project.optional-dependencies]
